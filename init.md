@@ -207,6 +207,23 @@ start_kernel <-- Here
 Control Flow:
 start_kernel
     set_task_stack_end_magic <-- Here
+
+969: Calls end_of_stack.
+```
+
+#### end\_of\_stack (linux/include/linux/sched/task\_stack.h:26)
+
+```txt
+Control Flow:
+start_kernel
+    set_task_stack_end_magic
+        end_of_stack <-- Here
+
+28-32: #ifdef CONFIG_STACK_GROWSUP
+           return (unsigned long *)((unsigned long)task->stack + THREAD_SIZE) - 1;
+       #else
+           return task->stack;
+       #endif
 ```
 
 #### smp\_setup\_processor\_id (linux/init/main.c:776)
@@ -228,6 +245,19 @@ start_kernel
     set_task_stack_end_magic
     smp_setup_processor_id
     debug_objects_early_init <-- Here
+
+665: Calls __debug_object_init.
+```
+
+#### \_\_debug\_object\_init (lib/debugobjects.c:610)
+
+```txt
+Control Flow:
+start_kernel
+    set_task_stack_end_magic
+    smp_setup_processor_id
+    debug_objects_early_init
+        __debug_object_init <-- Here
 ```
 
 #### init\_vmlinux\_build\_id (linux/lib/buildid.c:183)
@@ -239,6 +269,35 @@ start_kernel
     smp_setup_processor_id
     debug_objects_early_init
     init_vmlinux_build_id <-- Here
+
+189: Calls build_id_parse_buf.
+```
+
+#### build\_id\_parse\_buf (lib/buildid.c:172)
+
+```txt
+Control Flow:
+start_kernel
+    set_task_stack_end_magic
+    smp_setup_processor_id
+    debug_objects_early_init
+    init_vmlinux_build_id
+        build_id_parse_buf <-- Here
+
+174: return parse_build_id_buf(build_id, NULL, buf, buf_size);
+```
+
+#### parse\_build\_id\_buf (lib/buildid.c:16)
+
+```txt
+Control Flow:
+start_kernel
+    set_task_stack_end_magic
+    smp_setup_processor_id
+    debug_objects_early_init
+    init_vmlinux_build_id
+        build_id_parse_buf
+            parse_build_id_buf <-- Here
 ```
 
 #### cgroup\_init\_early (linux/kernel/cgroup/cgroup.c:6033)
@@ -264,6 +323,14 @@ start_kernel
     init_vmlinux_build_id
     cgroup_init_early
     local_irq_disable <-- Here
+
+211-217: #define local_irq_disable()                \
+             do {                       \
+                 bool was_disabled = raw_irqs_disabled();\
+                 raw_local_irq_disable();       \
+                 if (!was_disabled)         \
+                     trace_hardirqs_off();      \
+             } while (0)
 ```
 
 #### boot\_cpu\_init (linux/kernel/cpu.c:2718)
@@ -277,6 +344,284 @@ start_kernel
     cgroup_init_early
     local_irq_disable
     boot_cpu_init <-- Here
+
+2720: Calls smp_processor_id.
+
+2723: Calls set_cpu_online.
+
+2724: Calls set_cpu_active.
+
+2725: Calls set_cpu_present.
+
+2726: Calls set_cpu_possible.
+
+2729: Assigns local variable cpu to global variable __boot_cpu_id,
+      which is declared on line 1700 of this source file.
+```
+
+#### smp\_processor\_id (linux/include/linux/smp.h:264)
+
+```txt
+Control Flow:
+start_kernel
+    ...
+    debug_objects_early_init
+    init_vmlinux_build_id
+    cgroup_init_early
+    local_irq_disable
+    boot_cpu_init
+        smp_processor_id <-- Here
+
+264: # define smp_processor_id() __smp_processor_id()
+```
+
+#### \_\_smp\_processor\_id (linux/arch/x86/include/asm/smp.h:159)
+
+```txt
+Control Flow:
+start_kernel
+    ...
+    debug_objects_early_init
+    init_vmlinux_build_id
+    cgroup_init_early
+    local_irq_disable
+    boot_cpu_init
+        smp_processor_id
+            __smp_processor_id <-- Here
+
+159: #define __smp_processor_id() __this_cpu_read(cpu_number)
+```
+
+#### \_\_this\_cpu\_read (linux/include/linux/percpu-defs.h:443)
+
+```txt
+Control Flow:
+start_kernel
+    ...
+    debug_objects_early_init
+    init_vmlinux_build_id
+    cgroup_init_early
+    local_irq_disable
+    boot_cpu_init
+        smp_processor_id
+            __smp_processor_id
+                __this_cpu_read <-- Here
+
+443-447: #define __this_cpu_read(pcp)                       \
+         ({                                 \
+             __this_cpu_preempt_check("read");              \
+             raw_cpu_read(pcp);                      \
+         })
+```
+
+#### \_\_this\_cpu\_preempt\_check (linux/lib/smp\_processor\_id.c:64)
+
+```txt
+Control Flow:
+start_kernel
+    ...
+    debug_objects_early_init
+    init_vmlinux_build_id
+    cgroup_init_early
+    local_irq_disable
+    boot_cpu_init
+        smp_processor_id
+            __smp_processor_id
+                __this_cpu_read
+                    __this_cpu_preempt_check <-- Here
+
+66: check_preemption_disabled("__this_cpu_", op);
+```
+
+#### check\_preemption\_disabled (linux/lib/smp\_processor\_id.c:12)
+
+```txt
+Control Flow:
+start_kernel
+    ...
+    debug_objects_early_init
+    init_vmlinux_build_id
+    cgroup_init_early
+    local_irq_disable
+    boot_cpu_init
+        smp_processor_id
+            __smp_processor_id
+                __this_cpu_read
+                    __this_cpu_preempt_check
+                        check_preemption_disabled <-- Here
+```
+
+#### raw\_cpu\_read (linux/include/linux/percpu-defs.h:420)
+
+```txt
+Control Flow:
+start_kernel
+    ...
+    debug_objects_early_init
+    init_vmlinux_build_id
+    cgroup_init_early
+    local_irq_disable
+    boot_cpu_init
+        smp_processor_id
+            __smp_processor_id
+                __this_cpu_read
+                    __this_cpu_preempt_check
+                        check_preemption_disabled
+                            raw_cpu_read <-- Here
+
+420: #define raw_cpu_read(pcp) __pcpu_size_call_return(raw_cpu_read_, pcp)
+```
+
+#### \_\_pcpu\_size\_call\_return (linux/include/linux/percpu-defs.h:316)
+
+```txt
+Control Flow:
+start_kernel
+    ...
+    debug_objects_early_init
+    init_vmlinux_build_id
+    cgroup_init_early
+    local_irq_disable
+    boot_cpu_init
+        smp_processor_id
+            __smp_processor_id
+                __this_cpu_read
+                    __this_cpu_preempt_check
+                        check_preemption_disabled
+                            raw_cpu_read <-- Here
+
+316-329: #define __pcpu_size_call_return(stem, variable)                \
+         ({                                 \
+             typeof(variable) pscr_ret__;                    \
+             __verify_pcpu_ptr(&(variable));                 \
+             switch(sizeof(variable)) {                  \
+             case 1: pscr_ret__ = stem##1(variable); break;          \
+             case 2: pscr_ret__ = stem##2(variable); break;          \
+             case 4: pscr_ret__ = stem##4(variable); break;          \
+             case 8: pscr_ret__ = stem##8(variable); break;          \
+             default:                            \
+                 __bad_size_call_parameter(); break;            \
+             }                               \
+             pscr_ret__;                            \
+         })
+```
+
+#### raw\_cpu\_read\_8 (linux/arch/x86/include/asm/percpu.h:315)
+
+```txt
+Control Flow:
+start_kernel
+    ...
+    debug_objects_early_init
+    init_vmlinux_build_id
+    cgroup_init_early
+    local_irq_disable
+    boot_cpu_init
+        smp_processor_id
+            __smp_processor_id
+                __this_cpu_read
+                    __this_cpu_preempt_check
+                        check_preemption_disabled
+                            raw_cpu_read
+                                raw_cpu_read_8 <-- Here
+
+315: #define raw_cpu_read_8(pcp)            percpu_from_op(8, , "mov", pcp)
+```
+
+#### percpu\_from\_op (linux/arch/x86/include/asm/percpu.h:142)
+
+```txt
+Control Flow:
+start_kernel
+    ...
+    debug_objects_early_init
+    init_vmlinux_build_id
+    cgroup_init_early
+    local_irq_disable
+    boot_cpu_init
+        smp_processor_id
+            __smp_processor_id
+                __this_cpu_read
+                    __this_cpu_preempt_check
+                        check_preemption_disabled
+                            raw_cpu_read
+                                raw_cpu_read_8
+                                    percpu_from_op <-- here
+
+142-149: #define percpu_from_op(size, qual, op, _var)               \
+         ({                                  \
+             __pcpu_type_##size pfo_val__;                  \
+             asm qual (__pcpu_op2_##size(op, __percpu_arg([var]), "%[val]")	\
+                 : [val] __pcpu_reg_##size("=", pfo_val__)          \
+                 : [var] "m" (_var));                   \
+             (typeof(_var))(unsigned long) pfo_val__;            \
+         })
+```
+
+#### set\_cpu\_online (linux/kernel/cpu.c:2694)
+
+```txt
+Control Flow:
+start_kernel
+    ...
+    debug_objects_early_init
+    init_vmlinux_build_id
+    cgroup_init_early
+    local_irq_disable
+    boot_cpu_init
+        smp_processor_id
+        set_cpu_online <-- Here
+```
+
+#### set\_cpu\_active (linux/include/liux/cpumask.h:958)
+
+```txt
+Control Flow:
+start_kernel
+    ...
+    debug_objects_early_init
+    init_vmlinux_build_id
+    cgroup_init_early
+    local_irq_disable
+    boot_cpu_init
+        smp_processor_id
+        set_cpu_online
+        set_cpu_active <-- Here
+```
+
+#### set\_cpu\_present (linux/include/linux/cpumask.h:947)
+
+```txt
+Control Flow:
+start_kernel
+    ...
+    debug_objects_early_init
+    init_vmlinux_build_id
+    cgroup_init_early
+    local_irq_disable
+    boot_cpu_init
+        smp_processor_id
+        set_cpu_online
+        set_cpu_active
+        set_cpu_present <-- Here
+```
+
+#### set\_cpu\_possible (linux/include/linux/cpumask.h:938)
+
+```txt
+Control Flow:
+start_kernel
+    ...
+    debug_objects_early_init
+    init_vmlinux_build_id
+    cgroup_init_early
+    local_irq_disable
+    boot_cpu_init
+        smp_processor_id
+        set_cpu_online
+        set_cpu_active
+        set_cpu_present
+        set_cpu_possible <-- Here
 ```
 
 #### page\_address\_init (linux/mm/highmem.c:804)
