@@ -1,135 +1,135 @@
 ## Walkthrough of Debian 12.40's _systemd_ Program 
 
-#### main (systemd/src/core/main.c:2690)
+#### main (systemd/src/core/main.c:2804)
 
 ```txt
 Control Flow:
 main <-- Here
 
-2714: Calls redirect_telinit.
+2828: Calls redirect_telinit.
 
-2717: Calls dual_timestamp_from_monotonic.
+2831: Calls dual_timestamp_from_monotonic.
 
-2718: Calls dual_timestamp_get.
+2832: Calls dual_timestamp_now.
 
-2722: calls early_skip_setup_check.
+2836: calls early_skip_setup_check.
 
-2728: Calls __prctl.
+2842: Calls prctl.
 
-2731: Calls save_argc_argv.
+2845: Calls save_argc_argv.
 
-2735: Calls save_env.
+2849: Calls save_env.
 
-2742: Calls log_set_upgrade_syslog_to_journal.
+2856: Calls log_set_upgrade_syslog_to_journal.
 
-2744: Calls getpid_cached.
+2858: Calls getpid_cached.
 
-2749: Calls umask.
+2863: Calls umask.
 
-2753: Calls log_set_prohibit_ipc.
+2867: Calls log_set_prohibit_ipc.
 
-2759: Calls log_set_always_reopen_console.
+2873: Calls log_set_always_reopen_console.
 
-2760: Calls detect_container.
+2875: Calls detect_container.
 
-2764: Calls log_set_target on LOG_TARGET_KMSG.
+2878: Calls log_set_target_and_open on LOG_TARGET_KMSG.
 
-2765: Calls log_open.
+2880: Calls in_initrd.
 
-2767: Calls in_initrd.
+2884: Calls mount_setup_early.
 
-2771: Calls mount_setup_early.
+2893: Calls log_parse_environment.
 
-2780: Calls log_open.
+2898: Calls log_open.
 
-2782: Calls disable_printk_ratelimit.
+2901: Calls disable_printk_ratelimit.
 
-2784-2788: Calls initialize_security.
+2903-2907: Calls initialize_security.
 
-2793: Calls mac_selinux_init.
+2912: Calls mac_init.
 
-2798-2799: Calls initialize_clock.
+2919: Calls initialize_clock.
 
-2805: Calls log_set_target on LOG_TARGET_JOURNAL_OR_KMSG.
+2925: Calls log_set_target on LOG_TARGET_JOURNAL_OR_KMSG.
 
-2819: Calls initialize_coredump.
+2938: Calls initialize_coredump.
 
-2821: Calls fixup_environment.
+2940: Calls fixup_environment.
 
-2830: Calls colors_enabled and log_show_color.
+2951: Calls colors_enabled and log_show_color.
 
-2832: Calls make_null_stdio.
+2953: Calls make_null_stdio.
 
-2837-2838: Calls kmod_setup.
+2958-2959: Calls kmod_setup.
 
-2841: Calls mount_setup.
+2962: Calls mount_setup.
 
-2848: Calls efi_take_random_seed.
+2969: Calls lock_down_efi_variables.
 
-2851-2852: Calls cache_efi_options_variable.
+2972-2973: Calls cache_efi_options_variable.
 
-2876: Calls save_rlimits.
+2997: Calls save_rlimits.
 
-2879: Calls reset_all_signal_handlers.
+3000: Calls reset_all_signal_handlers.
 
-2880: Calls ingore_signals.
+3001: Calls ignore_signals.
 
-2882: Calls parse_configuration.
+3003: Calls parse_configuration.
 
-2884: Calls parse_argv.
+3005: Calls parse_argv.
 
-2890: Calls safety_checks.
+3011: Calls safety_checks.
 
-2894-2895: Calls pager_open.
+3015-3016: Calls pager_open.
 
-2928: Calls apply_clock_update.
+3049: Calls apply_clock_update.
 
-2931: Calls cmdline_take_random_seed.
+3052: Calls cmdline_take_random_seed.
 
-2935: Calls initialize_core_pattern.
+3056: Calls initialize_core_pattern.
 
-2938: Calls log_close.
+3059: Calls log_close.
 
-2941: Calls collect_fds.
+3062: Calls collect_fds.
 
-2946: Calls setup_console_terminal.
+3067: Calls setup_console_terminal.
 
-2949: Calls log_open.
+3070: Calls log_open.
 
-2952: Calls log_execution_mode.
+3073: Calls log_execution_mode.
 
-2954-2958: Calls initialize_runtime.
+3075-3079: Calls initialize_runtime.
 
-2962-2964: Calls manager_new.
+3083-3085: Calls manager_new.
 
-2977: Calls set_manager_defaults.
+3100: Calls set_manager_defaults.
 
-2978: Calls set_manager_settings.
+3101: Calls set_manager_settings.
 
-2979: Calls manager_set_first_boot.
+3102: Calls manager_set_first_boot.
 
-2980: Calls manager_set_switching_root.
+3103: Calls manager_set_switching_root.
 
-2985: Calls now.
+3108: Calls now.
 
-2987: Calls manager_startup.
+3110: Calls manager_startup.
 
-2994: Calls fdset_free.
+3117: Calls fdset_free.
 
-2995: Calls safe_fclose.
+3118: Calls safe_fclose.
 
-2997-2998: Calls do_queue_default_job.
+3120-3121: Calls do_queue_default_job.
 
-3003: Calls now.
+3126: Calls now.
 
-3005: Calls log_full.
+3218-3220: Calls log_full.
 
-3015-3023: Calls invoke_main_loop.
+3138-3145: Calls invoke_main_loop.
 
 (I might continue from here if I study shutdown in the future)
 ```
 
-#### redirect\_telinit (sytsemd-src/core/main.c:1453)
+#### redirect\_telinit (sytsemd-src/core/main.c:1444)
 
 ```txt
 Control Flow:
@@ -137,7 +137,7 @@ main
     redirect_telinit <-- Here
 ```
 
-#### dual\_timestamp\_from\_monotonic (systemd/src/basic/time-util.c:159)
+#### dual\_timestamp\_from\_monotonic (systemd/src/basic/time-util.c:178)
 
 ```txt
 Control Flow:
@@ -146,17 +146,17 @@ main
     dual_timestamp_from_monotonic <-- Here
 ```
 
-#### dual\_timestamp\_get (systemd/src/basic/time-util.c:67)
+#### dual\_timestamp\_now (systemd/src/basic/time-util.c:67)
 
 ```txt
 Control Flow:
 main
     redirect_telinit
     dual_timestamp_from_monotonic
-    dual_timestamp_get <-- Here
+    dual_timestamp_now <-- Here
 ```
 
-#### early\_skip\_setup\_check (systemd/src/core/main.c:2663)
+#### early\_skip\_setup\_check (systemd/src/core/main.c:2777)
 
 ```txt
 Control Flow:
@@ -167,7 +167,7 @@ main
     early_skip_setup_check <-- Here
 ```
 
-#### prctl (glibc/sysdepsunix/sysv/linux/prctl.c:29)
+#### prctl (glibc/sysdeps/unix/sysv/linux/prctl.c:29)
 
 ```txt
 Control Flow:
@@ -178,10 +178,14 @@ main
     early_skip_setup_check
     prctl <-- here
 
+NOTE: We refer to this function as "prctl" because of the
+      weak_alias(__prctl, prctl) call on line 42 on this
+      source file.
+
 38: return INLINE_SYSCALL_CALL (prctl, option, arg2, arg3, arg4, arg5);
 ```
 
-#### \_\_prctl (linux/kernel/sys.c:2364)
+#### prctl (linux/kernel/sys.c:2364)
 
 ```txt
 Control Flow:
@@ -190,7 +194,7 @@ main
     dual_timestamp_from_monotonic
     dual_timestamp_get
     early_skip_setup_check
-    __prctl
+    prctl
         prctl <-- Here
 ``` 
 
@@ -203,11 +207,11 @@ main
     dual_timestamp_from_monotonic
     dual_timestamp_get
     early_skip_setup_check
-    __prctl
+    prctl
     save_argc_argv <-- Here
 ```
 
-#### save\_env (systemd/src/core/main.c:2679)
+#### save\_env (systemd/src/core/main.c:2793)
 
 ```txt
 Control Flow:
@@ -215,31 +219,31 @@ main
     ...
     dual_timestamp_get
     early_skip_setup_check
-    __prctl
+    prctl
     save_argc_argv
     save_env <-- Here
 ```
 
-#### log\_set\_upgrade\_syslog\_to\_journal (systemd/src/basic/log.c:1450)
+#### log\_set\_upgrade\_syslog\_to\_journal (systemd/src/basic/log.c:1597)
 
 ```txt
 Control Flow:
 main
     ...
     early_skip_setup_check
-    __prctl
+    prctl
     save_argc_argv
     save_env
     log_set_upgrade_syslog_to_journal <-- Here
 ```
 
-#### getpid\_cached (systemd/src/basic/process-util.c:1153)
+#### getpid\_cached (systemd/src/basic/process-util.c:1277)
 
 ```txt
 Control Flow:
 main
     ...
-    __prctl
+    prctl
     save_argc_argv
     save_env
     log_set_upgrade_syslog_to_journal
@@ -257,9 +261,11 @@ main
     log_set_upgrade_syslog_to_journal
     getpid_cached
     umask <-- Here
+
+I'm going to assume this is a no-op for Linux.
 ```
 
-#### log\_set\_prohibit\_ipc (systemd/src/basic/log.c:1466)
+#### log\_set\_prohibit\_ipc (systemd/src/basic/log.c:1617)
 
 ```txt
 Control Flow:
@@ -274,7 +280,7 @@ main
 1471: prohibit_ipc = b;
 ```
 
-#### log\_set\_always\_reopen\_console (systemd/src/basic/log.c:1462)
+#### log\_set\_always\_reopen\_console (systemd/src/basic/log.c:1607)
 
 ```txt
 Control Flow:
@@ -289,7 +295,7 @@ main
 1463: always_reopen_console = b;
 ```
 
-#### detect\_container (systemd/src/basic/virt.c:659)
+#### detect\_container (systemd/src/basic/virt.c:661)
 
 ```txt
 Control Flow:
@@ -302,7 +308,7 @@ main
     detect_container <-- Here
 ```
 
-#### log\_set\_target (systemd/src/basic/log.c:329)
+#### log\_set\_target\_and\_open (systemd/src/basic/log.c:370)
 
 ```txt
 Control Flow:
@@ -315,7 +321,7 @@ main
     log_set_target <-- Here
 ```
 
-#### log\_open (systemd/src/basic/log.c:251)
+#### in\_initrd (systemd/src/basic/util.c:14)
 
 ```txt
 Control Flow:
@@ -325,10 +331,10 @@ main
     log_set_always_reopen_console
     detect_container
     log_set_target
-    log_open <-- Here
+    in_initrd <-- Here
 ```
 
-#### in\_initrd (systemd/src/basic/util.c:53)
+#### mount\_setup\_early (systemd/src/shared/mount-setup.c:245)
 
 ```txt
 Control Flow:
@@ -337,11 +343,49 @@ main
     log_set_always_reopen_console
     detect_container
     log_set_target
-    log_open
-    in_initrd <-- Here
+    in_initrd
+    mount_setup_early <-- Here
+
+247: return mount_points_setup(N_EARLY_MOUNT, /* loaded_policy= */ false);
 ```
 
-#### mount\_setup\_early (systemd/src/shared/mount-setup.c:233)
+#### mount\_points\_setup (src/shared/mount-setup.c:231)
+
+```txt
+Control Flow:
+main
+    ...
+    log_set_always_reopen_console
+    detect_container
+    log_set_target
+    in_initrd
+    mount_setup_early
+        mount_points_setup <-- Here
+
+237: Calls mount_one.
+```
+
+#### mount\_one (src/shared/mount-setup.c:166)
+
+```txt
+Control Flow:
+main
+    ...
+    log_set_always_reopen_console
+    detect_container
+    log_set_target
+    in_initrd
+    mount_setup_early
+        mount_points_setup
+            mount_one <-- Here
+```
+
+#### mount (linux/fs/namespace.c:3568)
+
+```txt
+```
+
+#### log\_parse\_environment (systemd/src/basic/log.c:1344)
 
 ```txt
 Control Flow:
@@ -349,64 +393,77 @@ main
     ...
     detect_container
     log_set_target
-    log_open
     in_initrd
-    mount_setup_early <-- Here
+    mount_setup_early
+    log_parse_environtment <-- Here
 ```
 
-#### disable\_printk\_ratelimit (systemd/src/core/manager.c:4014)
+#### log\_open (systemd/src/basic/log.c:278)
 
 ```txt
 Control Flow:
 main
     ...
     log_set_target
-    log_open
     in_initrd
     mount_setup_early
-    disable_printk_ratelimit <-- Here
+    log_parse_environtment
+    log_open <-- Here
 ```
 
-#### initialize\_security (systemd/src/core/main.c:2575)
+#### disable\_printk\_ratelimit (systemd/src/core/manager.c:4293)
 
 ```txt
 Control Flow:
 main
     ...
-    log_open
     in_initrd
     mount_setup_early
+    log_parse_environtment
+    log_open
+    disable_printk_ratelimit <-- Here
+```
+
+#### initialize\_security (systemd/src/core/main.c:2689)
+
+```txt
+Control Flow:
+main
+    ...
+    mount_setup_early
+    log_parse_environtment
+    log_open
     disable_printk_ratelimit
     initialize_security <-- Here
 ```
 
-#### mac\_selinux\_init (systemd/src/shared/selinux-util.c:149)
+#### mac\_init (systemd/src/shared/label-util.c:135)
 
 ```txt
 Control Flow:
 main
     ...
-    in_initrd
-    mount_setup_early
+    log_parse_environtment
+    log_open
     disable_printk_ratelimit
     initialize_security
-    mac_selinux_init <-- Here
+    mac_init <-- Here
 ```
 
-#### initialize\_clock (systemd/src/core/main.c:1559)
+#### initialize\_clock (systemd/src/core/main.c:1568)
 
 ```txt
 Control Flow:
 main
     ...
-    mount_setup_early
+    log_open
     disable_printk_ratelimit
     initialize_security
-    mac_selinux_init
+    mac_init
     initialize_clock <-- Here
 ```
 
-#### initialize\_coredump (systemd/src/core/main.c:2819)
+#### log\_set\_target (systemd/src/basic/log.c:356)
 
 ```txt
 Control Flow:
@@ -414,69 +471,82 @@ main
     ...
     disable_printk_ratelimit
     initialize_security
-    mac_selinux_init
+    mac_init
     initialize_clock
-    initialize_coredump <-- Here
+    log_set_target <-- Here
 ```
 
-#### fixup\_environment (systemd/src/core/main.c:1419)
+#### initialize\_coredump (systemd/src/core/main.c:1661)
 
 ```txt
 Control Flow:
 main
     ...
     initialize_security
-    mac_selinux_init
+    mac_init
     initialize_clock
+    log_set_target
+    initialize_coredump <-- Here
+```
+
+#### fixup\_environment (systemd/src/core/main.c:1404)
+
+```txt
+Control Flow:
+main
+    ...
+    mac_init
+    initialize_clock
+    log_set_target
     initialize_coredump
     fixup_environment <-- Here
 ```
 
-#### colors\_enabled (systemd/src/basic/terminal-util.h:160)
+#### colors\_enabled (systemd/src/basic/terminal-util.h:169)
 
 ```txt
 Control Flow:
 main
     ...
-    mac_selinux_init
     initialize_clock
+    log_set_target
     initialize_coredump
     fixup_environment
     colors_enabled <-- Here
 
-163: return get_color_mode() != COLOR_OFF;
+172: return get_color_mode() != COLOR_OFF;
 ```
 
-#### get\_color\_mode (systemd/src/basic/terminal-util.c:1262)
+#### get\_color\_mode (systemd/src/basic/terminal-util.c:1337)
 
 ```txt
 Control Flow:
 main
     ...
-    mac_selinux_init
     initialize_clock
+    log_set_target
     initialize_coredump
     fixup_environment
     colors_enabled
         get_color_mode <-- Here
 ```
 
-#### log\_show\_color (systemd/src/basic/log.c:1236)
+#### log\_show\_color (systemd/src/basic/log.c:1379)
 
 ```txt
 Control Flow:
 main
     ...
-    initialize_clock
+    log_set_target
     initialize_coredump
     fixup_environment
     colors_enabled
     log_show_color <-- Here
 
-1237: return show_color > 0; /* Defaults to false. */
+1380: return show_color > 0; /* Defaults to false. */
 ```
 
-#### make\_null\_stdio (systemd/src/basic/fd-util.h:88)
+#### make\_null\_stdio (systemd/src/basic/fd-util.h:87)
 
 ```txt
 Control Flow:
@@ -488,10 +558,10 @@ main
     log_show_color
     make_null_stdio <-- Here
 
-89: return rearrange_stdio(-1, -1, -1);
+88: return rearrange_stdio(-EBADF, -EBADF, -EBADF);
 ```
 
-#### rearrange\_stdio (systemd/src/basic/fd-util.c:633)
+#### rearrange\_stdio (systemd/src/basic/fd-util.c:651)
 
 ```txt
 Control Flow:
@@ -505,7 +575,7 @@ main
         rearrange_stdio <-- Here
 ```
 
-#### kmod\_setup (systemd/src/core/kmod-setup.c:92)
+#### kmod\_setup (systemd/src/core/kmod-setup.c:114)
 
 ```txt
 Control Flow:
@@ -518,7 +588,7 @@ main
     kmod_setup <-- Here
 ```
 
-#### mount\_setup (systemd/src/shared/mount-setup.c:503)
+#### mount\_setup (systemd/src/shared/mount-setup.c:515)
 
 ```txt
 Control Flow:
@@ -531,7 +601,7 @@ main
     mount_setup <-- Here
 ```
 
-#### efi\_take\_random\_seed (systemd/src/core/efi-random.c:43)
+#### lock\_down\_efi\_variables (systemd/src/core/efi-random.c:15)
 
 ```txt
 Control Flow:
@@ -541,10 +611,10 @@ main
     make_null_stdio
     kmod_setup
     mount_setup
-    efi_take_random_seed <-- Here
+    lock_down_efi_variables <-- Here
 ```
 
-#### cache\_efi\_options\_variable (systemd/src/basic/efivars.c:379)
+#### cache\_efi\_options\_variable (systemd/src/basic/efivars.c:395)
 
 ```txt
 Control Flow:
@@ -553,11 +623,11 @@ main
     make_null_stdio
     kmod_setup
     mount_setup
-    efi_take_random_seed
+    lock_down_efi_variables
     cache_efi_options_variable <-- Here
 ```
 
-#### save\_rlimits (systemd/src/core/main.c:2298)
+#### save\_rlimits (systemd/src/core/main.c:2419)
 
 ```txt
 Control Flow:
@@ -565,19 +635,19 @@ main
     ...
     kmod_setup
     mount_setup
-    efi_take_random_seed
+    lock_down_efi_variables
     cache_efi_options_variable
     save_rlimits <-- Here
 ```
 
-#### reset\_all\_signal\_handlers (systemd/src/basic/signal-util.c:15)
+#### reset\_all\_signal\_handlers (systemd/src/basic/signal-util.c:16)
 
 ```txt
 Control Flow:
 main
     ...
     mount_setup
-    efi_take_random_seed
+    lock_down_efi_variables
     cache_efi_options_variable
     save_rlimits
     reset_all_signal_handlers <-- Here
@@ -589,7 +659,7 @@ main
 Control Flow:
 main
     ...
-    efi_take_random_seed
+    lock_down_efi_variables
     cache_efi_options_variable
     save_rlimits
     reset_all_signal_handlers
@@ -605,7 +675,7 @@ main
                          -1)
 ```
 
-#### parse\_configuration (systemd/src/core/main.c:2488)
+#### parse\_configuration (systemd/src/core/main.c:2593)
 
 ```txt
 Control Flow:
@@ -618,7 +688,7 @@ main
     parse_configuration <-- Here
 ```
 
-#### parse\_argv (systemd/src/core/main.c:789)
+#### parse\_argv (systemd/src/core/main.c:787)
 
 ```txt
 Control Flow:
@@ -631,7 +701,7 @@ main
     parse_argv <-- Here
 ```
 
-#### safety\_checks (systemd/src/core/main.c:2531)
+#### safety\_checks (systemd/src/core/main.c:2636)
 
 ```txt
 Control Flow:
@@ -644,7 +714,7 @@ main
     safety_checks <-- Here
 ```
 
-#### pager\_open (sytemd/src/shared/pager.c:86)
+#### pager\_open (sytemd/src/shared/pager.c:101)
 
 ```txt
 Control Flow:
