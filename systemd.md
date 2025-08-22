@@ -727,7 +727,7 @@ main
     pager_open <-- Here
 ```
 
-#### apply\_clock\_update (systemd/src/core/main.c:1608)
+#### apply\_clock\_update (systemd/src/core/main.c:1616)
 
 ```txt
 Control Flow:
@@ -740,7 +740,7 @@ main
     apply_clock_update <-- Here
 ```
 
-#### cmdline\_take\_random\_seed (systemd/src/core/main.c:1625)
+#### cmdline\_take\_random\_seed (systemd/src/core/main.c:1633)
 
 ```txt
 Control Flow:
@@ -753,7 +753,7 @@ main
     cmdline_take_random_seed <-- Here
 ```
 
-#### initialize\_core\_pattern (systemd/src/core/main.c:1671)
+#### initialize\_core\_pattern (systemd/src/core/main.c:1677)
 
 ```txt
 Control Flow:
@@ -766,7 +766,7 @@ main
     initialize_core_pattern <-- Here
 ```
 
-#### log\_close (systemd/src/basic/log.c:343)
+#### log\_close (systemd/src/basic/log.c:375)
 
 ```txt
 Control Flow:
@@ -779,7 +779,7 @@ main
     log_close <-- Here
 ```
 
-#### collect\_fds (systemd/src/core/main.c:2618)
+#### collect\_fds (systemd/src/core/main.c:2632)
 
 ```txt
 Control Flow:
@@ -792,7 +792,7 @@ main
     collect_fds <-- Here
 ```
 
-#### setup\_console\_terminal (systemd/src/core/main.c:2646)
+#### setup\_console\_terminal (systemd/src/core/main.c:2760)
 
 ```txt
 Control Flow:
@@ -805,7 +805,7 @@ main
     setup_console_terminal <-- Here
 ```
 
-#### log\_execution\_mode (systemd/src/core/main.c:2042)
+#### log\_execution\_mode (systemd/src/core/main.c:2114)
 
 ```txt
 Control Flow:
@@ -818,7 +818,7 @@ main
     log_execution_mode <-- Here
 ```
 
-#### initialize\_runtime (systemd/src/core/main.c:2119)
+#### initialize\_runtime (systemd/src/core/main.c:2206)
 
 ```txt
 Control Flow:
@@ -831,7 +831,7 @@ main
     initialize_runtime <-- Here
 ```
 
-#### manager\_new (systemd/src/core/manager.c:812)
+#### manager\_new (systemd/src/core/manager.c:850)
 
 ```txt
 Control Flow:
@@ -844,7 +844,7 @@ main
     manager_new <-- Here
 ```
 
-#### set\_manager\_defaults (systemd/src/core/main.c:710)
+#### set\_manager\_defaults (systemd/src/core/main.c:735)
 
 ```txt
 Control Flow:
@@ -857,7 +857,7 @@ main
     set_manager_defaults <-- Here
 ```
 
-#### set\_manager\_settings (systemd/src/core/main.c:755)
+#### set\_manager\_settings (systemd/src/core/main.c:758)
 
 ```txt
 Control Flow:
@@ -870,7 +870,7 @@ main
     set_manager_settings <-- Here
 ```
 
-#### manager\_set\_first\_boot (systemd/src/core/manager.c:4165)
+#### manager\_set\_first\_boot (systemd/src/core/manager.c:4444)
 
 ```txt
 Control Flow:
@@ -883,7 +883,7 @@ main
     manager_set_first_boot <-- Here
 ```
 
-#### manager\_set\_switching\_root (systemd/src/core/manager.c:808)
+#### manager\_set\_switching\_root (systemd/src/core/manager.c:829)
 
 ```txt
 Control Flow:
@@ -895,7 +895,7 @@ main
     manager_set_first_boot
     manager_set_switching_root <-- Here
 
-809: m->switching_root = MANAGER_IS_SYSTEM(m) && switching_root;
+832: m->switching_root = MANAGER_IS_SYSTEM(m) && switching_root;
 ```
 
 #### now (systemd/src/basic/time-util.c:51)
@@ -913,7 +913,7 @@ main
 56: return timespec_load(&ts);
 ```
 
-#### timespec\_load (systemd/src/basic/time-util.c:206)
+#### timespec\_load (systemd/src/basic/time-util.c:228)
 
 ```txt
 Control Flow:
@@ -926,7 +926,7 @@ main
     now
         timespec_load <-- Here
 ```
-#### manager\_startup (systemd/src/core/manager.c:1839)
+#### manager\_startup (systemd/src/core/manager.c:1944)
 
 ```txt
 Control Flow:
